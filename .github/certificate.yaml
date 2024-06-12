@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wisecow-cert
+  namespace: default
+spec:
+  secretName: wisecow-cert-secret
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  commonName: wisecow.local
+  dnsNames:
+  - wisecow.local
