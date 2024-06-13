@@ -41,18 +41,14 @@ jobs:
       with:
         version: 'v1.18.0'
 
-    - name: Set Kubernetes context
-      uses: azure/k8s-set-context@v1
-      with:
-        method: kubeconfig
-        kubeconfig: ${{ secrets.KUBECONFIG }}
+    - name: Create kubeconfig file
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+      shell: bash
 
     - name: Deploy to Kubernetes
-      uses: azure/k8s-deploy@v1
-      with:
-        namespace: default
-        manifests: |
-          k8s/deployment.yaml
-          k8s/service.yaml
-        images: |
-          ${{ secrets.DOCKER_USERNAME }}/wisecow:latest
+      env:
+        KUBECONFIG: $HOME/.kube/config
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
