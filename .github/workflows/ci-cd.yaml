@@ -37,29 +37,11 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
+      uses: azure/kubernetes-action/kubectl@v1
       with:
-        version: 'v1.18.0'
-
-    - name: Create .kube directory
-      run: mkdir -p $HOME/.kube
-
-    - name: Debug KUBECONFIG secret
-      run: echo "${{ secrets.KUBECONFIG }}"
-
-    - name: Create kubeconfig file
-      run: echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
-      shell: bash
-
-    - name: Display kubeconfig file
-      run: cat $HOME/.kube/config
-   
-    - name: Print kubectl configuration
-      run: kubectl config view
+        kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
 
     - name: Deploy to Kubernetes
-      env:
-        KUBECONFIG: $HOME~/.kube/config
       run: |
         kubectl apply -f k8s/deployment.yaml
         kubectl apply -f k8s/service.yaml
