@@ -33,13 +33,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
     - name: Set up kubectl
-      uses: actions-hub/kubectl@master
+      uses: Azure/setup-kubectl@v1
       with:
         version: 'v1.18.0'
-        config: ${{ secrets.KUBECONFIG }}
 
     - name: Deploy to Kubernetes
-      run: |
-        kubectl apply -f k8s/deployment.yaml
-        kubectl apply -f k8s/service.yaml
+      uses: azure/k8s-deploy@v1
+      with:
+        namespace: default
+        manifests: |
+          k8s/deployment.yaml
+          k8s/service.yaml
+        images: |
+          ${{ secrets.DOCKER_USERNAME }}/wisecow:latest
+        kubeconfig: ${{ secrets.KUBECONFIG }}
