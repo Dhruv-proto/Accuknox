@@ -44,9 +44,15 @@ jobs:
     - name: Create .kube directory
       run: mkdir -p $HOME/.kube
 
+    - name: Debug KUBECONFIG secret
+      run: echo "${{ secrets.KUBECONFIG }}"
+
     - name: Create kubeconfig file
       run: echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
       shell: bash
+
+    - name: Display kubeconfig file
+      run: cat $HOME/.kube/config
 
     - name: Deploy to Kubernetes
       env:
