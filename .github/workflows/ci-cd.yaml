@@ -53,6 +53,9 @@ jobs:
 
     - name: Display kubeconfig file
       run: cat $HOME/.kube/config
+   
+    - name: Print kubectl configuration
+      run: kubectl config view
 
     - name: Deploy to Kubernetes
       env:
