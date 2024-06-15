@@ -33,27 +33,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
     - name: Set up kubectl
-      uses: azure/setup-kubectl@v1
+      uses: actions-hub/kubectl@master
       with:
         version: 'v1.18.0'
-
-    - name: Debug KUBECONFIG secret
-      run: echo "${{ secrets.KUBECONFIG }}"
-
-    - name: Create kubeconfig file
-      run: echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
-      shell: bash
-
-    - name: Display kubeconfig file
-      run: cat $HOME/.kube/config
+        config: ${{ secrets.KUBECONFIG }}
 
     - name: Deploy to Kubernetes
-      env:
-        KUBECONFIG: $HOME/.kube/config
       run: |
         kubectl apply -f k8s/deployment.yaml
         kubectl apply -f k8s/service.yaml
